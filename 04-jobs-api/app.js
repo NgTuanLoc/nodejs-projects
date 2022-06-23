@@ -6,6 +6,7 @@ import colors from 'colors';
 // error handler
 import { notFoundMiddleware } from './middleware/not-found.js';
 import { errorHandlerMiddleware } from './middleware/error-handler.js';
+import { authMiddleware } from './middleware/authentication.js';
 
 // router
 import authRouter from './routes/auth.js';
@@ -25,7 +26,7 @@ app.get('/', (req, res) => {
 	res.send('jobs api');
 });
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/jobs', jobsRouter);
+app.use('/api/v1/jobs', authMiddleware, jobsRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
