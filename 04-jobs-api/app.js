@@ -3,6 +3,10 @@ import express from 'express';
 import 'express-async-errors';
 import colors from 'colors';
 
+// swagger UI
+import swaggerUI from 'swagger-ui-express';
+import YAML from 'yamljs';
+
 // extra security packages
 import helmet from 'helmet';
 import cors from 'cors';
@@ -22,6 +26,7 @@ import jobsRouter from './routes/jobs.js';
 import { connectDB } from './db/connect.js';
 
 dotenv.config();
+const swaggerDocument = YAML.load('./document.yaml');
 const app = express();
 
 app.use(express.json());
@@ -32,14 +37,15 @@ app.use(xss());
 app.use(
 	rateLimiter({
 		windowMs: 15 * 60 * 1000, // 15 minutes
-		max: 100 // limit each IP to 100 requests per windowMs
+		max: 100, // limit each IP to 100 requests per windowMs
 	})
 );
 
 // routes
 app.get('/', (req, res) => {
-	res.send('jobs api');
+	res.send('<h1>Jobs API</h1><a href="/document">Read Document</a>');
 });
+app.use('/document', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/jobs', authMiddleware, jobsRouter);
 
