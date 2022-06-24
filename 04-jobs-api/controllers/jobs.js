@@ -13,8 +13,10 @@ const getAllJobs = async (req, res) => {
 };
 
 const getJob = async (req, res) => {
-	const { id: jobId } = req.params;
-	const { userId } = req.user;
+	const {
+		params: { id: jobId },
+		user: { userId },
+	} = req;
 
 	const job = await Job.findOne({
 		_id: jobId,
@@ -35,11 +37,45 @@ const createJob = async (req, res) => {
 };
 
 const updateJob = async (req, res) => {
-	res.send('Update Job');
+	const {
+		params: { id: jobId },
+		user: { userId },
+		body: { company, position, status },
+	} = req;
+
+	if (company === '' || position === '' || status === '') {
+		throw new BadRequestError('Company, position and status must be provided');
+	}
+	const job = await Job.findByIdAndUpdate(
+		{
+			_id: jobId,
+			createdBy: userId,
+		},
+		req.body,
+		{ new: true }
+	);
+
+	res.status(StatusCodes.OK).json({
+		job,
+	});
 };
 
 const deleteJob = async (req, res) => {
-	res.send('Delete Job');
+	const {
+		params: { id: jobId },
+		user: { userId },
+	} = req;
+
+	const job = await Job.findByIdAndRemove({
+		_id: jobId,
+		cretedBy: userId,
+	});
+
+	if (!job) {
+		throw new NotFoundError(`No job with id: ${jobId}`);
+	}
+
+	res.status(StatusCodes.OK).send(`Deleted Job ${jobId}`);
 };
 
 export { getAllJobs, getJob, createJob, updateJob, deleteJob };
