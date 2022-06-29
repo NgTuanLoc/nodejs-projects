@@ -16,11 +16,11 @@ const uploadImageLocal = async (req, res) => {
 	const productImage = req.files.image;
 
 	if (!productImage.mimetype.startsWith('image')) {
-		throw new BadRequestError('Please provice image file');
+		throw new BadRequestError('Please provide image file');
 	}
 
 	if (productImage.size > process.env.FILE_MAX_SIZE) {
-		throw new BadRequestError('Image File reaches more than 400kb');
+		throw new BadRequestError('Image File reaches more than 4MB');
 	}
 
 	const imagePath = path.join(
