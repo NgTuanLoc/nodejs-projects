@@ -13,6 +13,9 @@ import { errorHandlerMiddleware } from './middleware/error-handler.js';
 // Connect to database
 import { connectDB } from './db/connect.js';
 
+// Route
+import authRoute from './routes/authRoute.js';
+
 // config
 dotenv.config();
 
@@ -34,6 +37,8 @@ app.use(express.json());
 app.get('/', (req, res) => {
 	res.status(200).send('E-COMMERCE API');
 });
+
+app.use('/api/v1', authRoute);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
