@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import 'express-async-errors';
 import colors from 'colors';
+import cors from 'cors';
 
 // Useful Middleware
 import morgan from 'morgan';
@@ -33,7 +34,9 @@ const app = express();
 // middleware
 app.use(morgan('tiny'));
 app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cors());
+app.use(express.static('./public'));
 
 // Route
 app.get('/', (req, res) => {
@@ -41,11 +44,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/v1', (req, res) => {
-	console.log(req.cookies);
+	console.log(req.signedCookies);
 	res.send('Test');
 });
 
-app.use('/api/v1', authRoute);
+app.use('/api/v1/auth', authRoute);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
