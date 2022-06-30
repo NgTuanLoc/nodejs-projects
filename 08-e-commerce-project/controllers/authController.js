@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import User from '../models/User.js';
 import { BadRequestError } from '../errors/index.js';
+import { createJWT } from '../utils/index.js';
 
 const register = async (req, res) => {
 	const { email, name, password } = req.body;
@@ -14,8 +15,14 @@ const register = async (req, res) => {
 	const isFirstAccount = (await User.countDocuments({})) === 0;
 	const role = isFirstAccount ? 'admin' : 'user';
 
+	// Create User
 	const user = await User.create({ email, name, password, role });
-	res.status(StatusCodes.CREATED).json({ user });
+
+	// Send back Token
+	const tokenUser = { name: user.name, userId: user._id, role: user.role };
+	const token = createJWT({ payload: tokenUser });
+
+	res.status(StatusCodes.CREATED).json({ user: tokenUser, token });
 };
 
 const login = async (req, res) => {
