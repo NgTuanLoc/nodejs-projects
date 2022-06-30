@@ -3,7 +3,6 @@ import { verifyJWT } from '../utils/index.js';
 
 const authMiddleware = (req, res, next) => {
 	const token = req.signedCookies.token;
-	console.log(token);
 
 	if (!token) {
 		throw new UnauthenticatedError('Authentication Error !');

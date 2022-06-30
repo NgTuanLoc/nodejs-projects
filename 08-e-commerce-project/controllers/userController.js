@@ -1,7 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
 
 import User from '../models/User.js';
-import { NotFoundError, BadRequestError } from '../errors/index.js';
+import {
+	NotFoundError,
+	BadRequestError,
+	UnauthenticatedError,
+} from '../errors/index.js';
 
 const getAllUsers = async (req, res) => {
 	const users = await User.find({ role: 'user' }).select('-password');
@@ -22,7 +26,7 @@ const getSingleUser = async (req, res) => {
 };
 
 const showCurrentUser = async (req, res) => {
-	res.send('Show Current User');
+	res.status(StatusCodes.OK).json({ user: req.user });
 };
 
 const updateUser = async (req, res) => {
@@ -30,7 +34,17 @@ const updateUser = async (req, res) => {
 };
 
 const updateUserPassword = async (req, res) => {
-	res.send('Update User User');
+	const { oldPassword, newPassword } = req.body;
+	const { userId } = req.user;
+	const user = await User.findOne({ _id: userId });
+	const isPasswordCorrect = await user.verifyPassword(oldPassword);
+
+	if (!isPasswordCorrect) {
+		throw new UnauthenticatedError('Wrong password !');
+	}
+	user.password = newPassword;
+	await user.save();
+	res.status(StatusCodes.OK).json({ msg: 'Password changed successfully' });
 };
 
 export {
