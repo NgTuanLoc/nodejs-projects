@@ -6,6 +6,11 @@ import {
 	BadRequestError,
 	UnauthenticatedError,
 } from '../errors/index.js';
+import {
+	createTokenUser,
+	attachCookieToResponse,
+	checkPermission,
+} from '../utils/index.js';
 
 const getAllUsers = async (req, res) => {
 	const users = await User.find({ role: 'user' }).select('-password');
@@ -17,6 +22,8 @@ const getSingleUser = async (req, res) => {
 	const { id } = req.params;
 
 	const user = await User.findOne({ _id: id }).select('-password');
+
+	checkPermission(req.user, id);
 
 	if (!user) {
 		throw new NotFoundError(`There is no valid user with id: ${id}`);
@@ -30,7 +37,25 @@ const showCurrentUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-	res.send('Update User');
+	const { name, email } = req.body;
+	const { userId } = req.user;
+
+	if (!name || !email) {
+		throw new BadRequestError('name and email must be provided');
+	}
+
+	const user = await User.findOneAndUpdate(
+		{ _id: userId },
+		{ name, email },
+		{
+			runValidators: true,
+			new: true,
+		}
+	);
+
+	const userToken = createTokenUser(user);
+	attachCookieToResponse({ res, user: userToken });
+	res.status(StatusCodes.OK).json({ user });
 };
 
 const updateUserPassword = async (req, res) => {

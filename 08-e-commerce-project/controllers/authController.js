@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import User from '../models/User.js';
 import { BadRequestError, UnauthenticatedError } from '../errors/index.js';
-import { attachCookieToResponse } from '../utils/index.js';
+import { attachCookieToResponse, createTokenUser } from '../utils/index.js';
 
 const register = async (req, res) => {
 	const { email, name, password } = req.body;
@@ -19,9 +19,9 @@ const register = async (req, res) => {
 	const user = await User.create({ email, name, password, role });
 
 	// Send back Token and Cookie
-	const tokenUser = { name: user.name, userId: user._id, role: user.role };
+	const tokenUser = createTokenUser(user);
 	attachCookieToResponse({ res, user: tokenUser });
-	res.status(StatusCodes.CREATED).json({ user: tokenUser, token });
+	res.status(StatusCodes.CREATED).json({ user: tokenUser });
 };
 
 const login = async (req, res) => {
@@ -42,7 +42,7 @@ const login = async (req, res) => {
 	}
 
 	// Send back Token and Cookie
-	const tokenUser = { name: user.name, userId: user._id, role: user.role };
+	const tokenUser = createTokenUser(user);
 	attachCookieToResponse({ res, user: tokenUser });
 
 	res.status(StatusCodes.OK).json({ user });
