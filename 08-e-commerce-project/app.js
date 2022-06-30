@@ -7,6 +7,7 @@ import cors from 'cors';
 // Useful Middleware
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import { authMiddleware } from './middleware/authentication.js';
 
 // Error Middleware
 import { notFound as notFoundMiddleware } from './middleware/not-found.js';
@@ -17,6 +18,7 @@ import { connectDB } from './db/connect.js';
 
 // Route
 import authRoute from './routes/authRoute.js';
+import userRoute from './routes/userRoute.js';
 
 // config
 dotenv.config();
@@ -39,16 +41,8 @@ app.use(cors());
 app.use(express.static('./public'));
 
 // Route
-app.get('/', (req, res) => {
-	res.status(200).send('E-COMMERCE API');
-});
-
-app.get('/api/v1', (req, res) => {
-	console.log(req.signedCookies);
-	res.send('Test');
-});
-
 app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/users', authMiddleware, userRoute);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
