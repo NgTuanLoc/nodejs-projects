@@ -5,6 +5,7 @@ import colors from 'colors';
 
 // Useful Middleware
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 
 // Error Middleware
 import { notFound as notFoundMiddleware } from './middleware/not-found.js';
@@ -32,10 +33,16 @@ const app = express();
 // middleware
 app.use(morgan('tiny'));
 app.use(express.json());
+app.use(cookieParser());
 
 // Route
 app.get('/', (req, res) => {
 	res.status(200).send('E-COMMERCE API');
+});
+
+app.get('/api/v1', (req, res) => {
+	console.log(req.cookies);
+	res.send('Test');
 });
 
 app.use('/api/v1', authRoute);

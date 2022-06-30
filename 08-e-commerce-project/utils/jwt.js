@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 
+
 const createJWT = ({ payload }) => {
 	const token = jwt.sign(payload, process.env.JWT_SECRET, {
 		expiresIn: process.env.JWT_LIFETIME,
@@ -11,4 +12,13 @@ const verifyJWT = ({ token }) => {
 	return jwt.verify(token, process.env.JWT_SECRET);
 };
 
-export { createJWT, verifyJWT };
+const attachCookieToResponse = ({ res, user }) => {
+	const oneDay = 1000 * 24 * 3600;
+	const token = createJWT({ payload: user });
+	res.cookie('token', token, {
+		httpOnly: true,
+		expires: new Date(Date.now() + oneDay),
+	});
+};
+
+export { createJWT, verifyJWT, attachCookieToResponse };

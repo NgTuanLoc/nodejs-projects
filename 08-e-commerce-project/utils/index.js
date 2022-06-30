@@ -1,3 +1,3 @@
-import { createJWT, verifyJWT } from './jwt.js';
+import { createJWT, verifyJWT, attachCookieToResponse } from './jwt.js';
 
-export { createJWT, verifyJWT };
+export { createJWT, verifyJWT, attachCookieToResponse };

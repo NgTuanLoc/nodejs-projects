@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import User from '../models/User.js';
 import { BadRequestError } from '../errors/index.js';
-import { createJWT } from '../utils/index.js';
+import { attachCookieToResponse } from '../utils/index.js';
 
 const register = async (req, res) => {
 	const { email, name, password } = req.body;
@@ -18,11 +18,11 @@ const register = async (req, res) => {
 	// Create User
 	const user = await User.create({ email, name, password, role });
 
-	// Send back Token
+	// Send back Token and Setup Cookie
 	const tokenUser = { name: user.name, userId: user._id, role: user.role };
-	const token = createJWT({ payload: tokenUser });
+	attachCookieToResponse({ res, user: tokenUser });
+	res.status(201).json({ user: tokenUser, token });
 
-	res.status(StatusCodes.CREATED).json({ user: tokenUser, token });
 };
 
 const login = async (req, res) => {
