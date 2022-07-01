@@ -9,6 +9,7 @@ const __dirname = path.resolve();
 const createProduct = async (req, res) => {
 	req.body.user = req.user.userId;
 	const product = await Product.create(req.body);
+
 	res.status(StatusCodes.CREATED).json({ product });
 };
 
@@ -19,7 +20,7 @@ const getAllProducts = async (req, res) => {
 
 const getSingleProduct = async (req, res) => {
 	const { id: productId } = req.params;
-	const product = await Product.findOne({ _id: productId });
+	const product = await Product.findOne({ _id: productId }).populate('reviews');
 
 	if (!product) {
 		throw new NotFoundError(

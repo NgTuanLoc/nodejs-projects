@@ -8,6 +8,7 @@ import {
 	deleteProduct,
 	uploadImage,
 } from '../controllers/productController.js';
+import { getAllReviewsFromProduct } from '../controllers/reviewController.js';
 import { authorizedPermissionMiddleware } from '../middleware/authentication.js';
 
 const router = express.Router();
@@ -26,5 +27,7 @@ router
 router
 	.route('/:id/uploadimage')
 	.post(authorizedPermissionMiddleware('admin'), uploadImage);
+
+router.route('/:id/reviews').get(getAllReviewsFromProduct);
 
 export default router;
