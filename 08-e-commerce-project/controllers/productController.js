@@ -1,7 +1,10 @@
 import { StatusCodes } from 'http-status-codes';
+import path from 'path';
 
 import Product from '../models/Product.js';
-import { NotFoundError } from '../errors/index.js';
+import { NotFoundError, BadRequestError } from '../errors/index.js';
+
+const __dirname = path.resolve();
 
 const createProduct = async (req, res) => {
 	req.body.user = req.user.userId;
@@ -66,7 +69,27 @@ const deleteProduct = async (req, res) => {
 };
 
 const uploadImage = async (req, res) => {
-	res.send('upload image');
+	if (!req.files) {
+		throw new BadRequestError('No file uploaded');
+	}
+	const uploadImage = req.files.image;
+
+	if (!uploadImage.mimetype.startsWith('image')) {
+		throw new CustomError.BadRequestError('Please Upload Image');
+	}
+
+	const maxSize = 1024 * 1024;
+
+	if (uploadImage.size > maxSize) {
+		throw new BadRequestError('Image size is bigger than 1MB');
+	}
+
+	const pathImage = __dirname + '/public/uploads/' + uploadImage.name;
+	uploadImage.mv(pathImage);
+
+	res
+		.status(StatusCodes.CREATED)
+		.json({ msg: `Image: ${uploadImage.name}  uploaded !` });
 };
 
 export {

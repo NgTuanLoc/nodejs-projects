@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import 'express-async-errors';
 import colors from 'colors';
 import cors from 'cors';
+import fileUpload from 'express-fileupload';
 
 // Useful Middleware
 import morgan from 'morgan';
@@ -40,6 +41,7 @@ app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors());
 app.use(express.static('./public'));
+app.use(fileUpload());
 
 // Route
 app.use('/api/v1/auth', authRoute);
