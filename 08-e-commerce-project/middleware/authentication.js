@@ -21,7 +21,7 @@ const authMiddleware = (req, res, next) => {
 const authorizedPermissionMiddleware = (...roles) => {
 	return (req, res, next) => {
 		if (!roles.includes(req.user.role)) {
-			throw new Unauthorized('Unauthorized access this route');
+			throw new Unauthorized('Unauthorized to access this route');
 		}
 		next();
 	};

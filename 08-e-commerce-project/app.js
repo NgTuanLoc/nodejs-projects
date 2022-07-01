@@ -19,6 +19,7 @@ import { connectDB } from './db/connect.js';
 // Route
 import authRoute from './routes/authRoute.js';
 import userRoute from './routes/userRoute.js';
+import productRoute from './routes/productRoute.js';
 
 // config
 dotenv.config();
@@ -43,6 +44,7 @@ app.use(express.static('./public'));
 // Route
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/users', authMiddleware, userRoute);
+app.use('/api/v1/products', productRoute);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
