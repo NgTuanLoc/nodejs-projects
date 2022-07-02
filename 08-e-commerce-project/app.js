@@ -2,8 +2,14 @@ import express from 'express';
 import dotenv from 'dotenv';
 import 'express-async-errors';
 import colors from 'colors';
-import cors from 'cors';
 import fileUpload from 'express-fileupload';
+
+// Security Middleware
+import helmet from 'helmet';
+import cors from 'cors';
+import xss from 'xss-clean';
+import mongoSanitize from 'express-mongo-sanitize';
+import rateLimiter from 'express-rate-limit';
 
 // Useful Middleware
 import morgan from 'morgan';
@@ -36,6 +42,19 @@ const PORT = process.env.PORT || 3000;
 
 // express
 const app = express();
+
+// security package
+app.set('trust proxy', 1);
+app.use(
+	rateLimiter({
+		windowMs: 15 * 60 * 1000,
+		max: 60,
+	})
+);
+app.use(helmet());
+app.use(cors());
+app.use(xss());
+app.use(mongoSanitize());
 
 // middleware
 app.use(morgan('tiny'));
