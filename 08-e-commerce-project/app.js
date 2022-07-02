@@ -22,6 +22,7 @@ import authRoute from './routes/authRoute.js';
 import userRoute from './routes/userRoute.js';
 import productRoute from './routes/productRoute.js';
 import reviewRoute from './routes/reviewRoute.js';
+import orderRoute from './routes/orderRoute.js';
 
 // config
 dotenv.config();
@@ -49,6 +50,7 @@ app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/users', authMiddleware, userRoute);
 app.use('/api/v1/products', authMiddleware, productRoute);
 app.use('/api/v1/reviews', reviewRoute);
+app.use('/api/v1/orders', authMiddleware, orderRoute);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
