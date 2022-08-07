@@ -24,7 +24,7 @@ const getSingleProduct = async (req, res) => {
 
 	if (!product) {
 		throw new NotFoundError(
-			`Get Product unsucessfully ! Not found product with id: ${productId}`
+			`Get Product unsuccessfully ! Not found product with id: ${productId}`
 		);
 	}
 

@@ -21,11 +21,11 @@
 - [] setup / GET Route
 - [] setup express.json() middleware
 - [] setup 404 and errorHandler middleware
-- [] import 'exress-async-errors' package
+- [] import 'express-async-errors' package
 
 #### 404 vs ErrorHandler Middleware
 
-#### Morgan Pacakge
+#### Morgan Package
 
 - [Morgan Package](https://www.npmjs.com/package/morgan)
 
@@ -324,7 +324,7 @@
 #### Get All Orders and Get Single Order
 
 - [] getAllOrders - admin only
-- [] getSingleOrder - chechPermissions
+- [] getSingleOrder - checkPermissions
 
 #### Get Current User Orders
 
