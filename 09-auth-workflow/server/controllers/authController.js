@@ -2,6 +2,8 @@ const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const { attachCookiesToResponse, createTokenUser } = require('../utils');
+const crypto = require('crypto');
+const { STATUS_CODES } = require('http');
 
 const register = async (req, res) => {
 	const { email, name, password } = req.body;
@@ -15,11 +17,27 @@ const register = async (req, res) => {
 	const isFirstAccount = (await User.countDocuments({})) === 0;
 	const role = isFirstAccount ? 'admin' : 'user';
 
-	const user = await User.create({ name, email, password, role });
-	const tokenUser = createTokenUser(user);
-	attachCookiesToResponse({ res, user: tokenUser });
-	res.status(StatusCodes.CREATED).json({ user: tokenUser });
+	const verificationToken = crypto.randomBytes(50).toString('hex');
+
+	const user = await User.create({
+		name,
+		email,
+		password,
+		role,
+		verificationToken,
+	});
+
+	// Send verification token back only while testing in Postman
+	res.status(StatusCodes.CREATED).json({
+		msg: 'Success! Please check your email to verify account',
+		verificationToken: user.verificationToken,
+	});
+
+	// const tokenUser = createTokenUser(user);
+	// attachCookiesToResponse({ res, user: tokenUser });
+	// res.status(StatusCodes.CREATED).json({ user: tokenUser });
 };
+
 const login = async (req, res) => {
 	const { email, password } = req.body;
 
@@ -35,6 +53,10 @@ const login = async (req, res) => {
 	if (!isPasswordCorrect) {
 		throw new CustomError.UnauthenticatedError('Invalid Credentials');
 	}
+	if (!user.verified) {
+		throw new CustomError.UnauthenticatedError('Please verify your email!');
+	}
+
 	const tokenUser = createTokenUser(user);
 	attachCookiesToResponse({ res, user: tokenUser });
 
@@ -48,8 +70,15 @@ const logout = async (req, res) => {
 	res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
 };
 
+const verifyEmail = async (req, res) => {
+	const { verificationToken, email } = req.body;
+
+	res.status(StatusCodes.OK).json({ msg: 'verifyEmail' });
+};
+
 module.exports = {
 	register,
 	login,
 	logout,
+	verifyEmail,
 };
