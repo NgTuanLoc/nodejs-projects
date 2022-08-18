@@ -16,13 +16,13 @@ const createReview = async (req, res) => {
 
 	req.body.user = userId;
 
-	const isAldreadySubmit = await Review.findOne({
+	const isAlreadySubmit = await Review.findOne({
 		product: productId,
 		user: userId,
 	});
 
-	if (isAldreadySubmit) {
-		throw new BadRequestError('You have aldreay reviewed this product');
+	if (isAlreadySubmit) {
+		throw new BadRequestError('You have already reviewed this product');
 	}
 
 	const review = await Review.create(req.body);
