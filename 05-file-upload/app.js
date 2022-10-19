@@ -3,6 +3,7 @@ import 'express-async-errors';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import cloudinary from 'cloudinary';
+import morgan from 'morgan';
 
 // database
 import { connectDB } from './db/connect.js';
@@ -23,6 +24,7 @@ cloudinary.v2.config({
 });
 
 const app = express();
+app.use(morgan('tiny'));
 app.use(express.json());
 app.use(fileUpload({ useTempFiles: true }));
 app.use(express.static('./public'));

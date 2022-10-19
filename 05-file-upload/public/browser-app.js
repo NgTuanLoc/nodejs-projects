@@ -27,6 +27,7 @@ imageInputDOM.addEventListener('change', async (e) => {
 				'Content-Type': 'multipart/form-data',
 			},
 		});
+
 		imageValue = src;
 	} catch (error) {
 		imageValue = null;
@@ -38,6 +39,7 @@ fileFormDOM.addEventListener('submit', async (e) => {
 	e.preventDefault();
 	const nameValue = nameInputDOM.value;
 	const priceValue = priceInputDOM.value;
+
 	try {
 		const product = { name: nameValue, price: priceValue, image: imageValue };
 

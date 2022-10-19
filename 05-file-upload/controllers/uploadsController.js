@@ -1,9 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 import path from 'path';
 import cloudinary from 'cloudinary';
-import fs from 'fs'
+import fs from 'fs';
 
-import Product from '../models/Product.js';
 import { BadRequestError } from '../errors/index.js';
 
 const __dirname = path.resolve() + '/05-file-upload/';
@@ -41,9 +40,10 @@ const uploadImage = async (req, res) => {
 			folder: 'file-upload',
 		}
 	);
-    fs.unlinkSync(req.files.image.tempFilePath)
+
+	fs.unlinkSync(req.files.image.tempFilePath);
 	return res.status(StatusCodes.OK).json({
-		image: { srd: result.secure_url },
+		image: { src: result.secure_url },
 	});
 };
 
