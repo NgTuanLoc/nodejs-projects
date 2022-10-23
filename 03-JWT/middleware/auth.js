@@ -1,4 +1,3 @@
-import { CustomAPIError } from '../errors/custom-error.js';
 import jwt from 'jsonwebtoken';
 
 import { UnauthenticatedError } from '../errors/index.js';

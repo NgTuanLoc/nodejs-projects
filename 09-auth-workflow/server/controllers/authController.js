@@ -10,7 +10,6 @@ const {
 	createHash,
 } = require('../utils');
 const crypto = require('crypto');
-const { STATUS_CODES } = require('http');
 
 const register = async (req, res) => {
 	const { email, name, password } = req.body;

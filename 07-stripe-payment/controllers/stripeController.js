@@ -1,11 +1,8 @@
 import Stripe from 'stripe';
 
-const stripe = new Stripe(
-	'sk_test_51LFrCHFgPtGImR817Koa05dEjf3y6P07Jc7RiaX0CQ5TaFDuypNWRmczk1ihifmeEo3mUtba6NrQyOx9yydObDVT00JppL1b2m',
-	{
-		apiVersion: '2020-08-27',
-	}
-);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+	apiVersion: '2020-08-27',
+});
 
 export const stripeController = async (req, res) => {
 	const { purchase, total_amount, shipping_fee } = req.body;
